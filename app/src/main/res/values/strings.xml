@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PiSSH</string>
+    <string name="edit_ip_address">Enter IP Adress</string>
+    <string name="button_send">Send</string>
+</resources>
