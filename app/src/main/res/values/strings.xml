@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">PiSSH</string>
-    <string name="edit_ip_address">Enter IP Adress</string>
+    <string name="edit_ip_address">Enter IP Address</string>
+    <string name="edit_password">Password</string>
     <string name="button_send">Send</string>
+    <!--  Possibly delete from here  -->
+    <string name="host">Host</string>
+    <string name="port">Port</string>
+    <string name="default_port">22</string>
+    <string name="username">Username</string>
+    <!--  To here  -->
 </resources>
