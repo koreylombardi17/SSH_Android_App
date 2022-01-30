@@ -8,6 +8,12 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.channel.ClientChannel;
+import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.common.util.io.NoCloseInputStream;
+import org.apache.sshd.common.util.io.NoCloseOutputStream;
+
+import java.io.IOException;
 
 public class SshStatusActivity extends AppCompatActivity {
 
@@ -19,6 +25,8 @@ public class SshStatusActivity extends AppCompatActivity {
         // Gets the Intent that created the View
         Intent intent = getIntent();
         // Grab the ip address stored from form
+        // Todo: change this hardcoded value
+        String username = "pi@raspberrypi";
         String ipAddress = intent.getStringExtra(MainActivity.EXTRA_IP_ADDRESS);
         String password = intent.getStringExtra(MainActivity.EXTRA_PASSWORD);
         // Set the TextView's text
@@ -31,7 +39,8 @@ public class SshStatusActivity extends AppCompatActivity {
         String value = SystemContext.getApplicationInfo().dataDir;
         System.setProperty(key, value);
 
-        // Todo: Finish client connection. Read through SshClient.java documentation at top of file.
-        SshClient client = SshClient.setUpDefaultClient();
+        SshConnection connect = new SshConnection("pi", "raspberrypi", 22, "raspberrypi");
+        Thread thread = new Thread(connect);
+        thread.start();
     }
 }
