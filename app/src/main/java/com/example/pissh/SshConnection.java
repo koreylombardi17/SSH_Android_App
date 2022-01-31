@@ -18,26 +18,26 @@ import java.util.concurrent.TimeUnit;
 public class SshConnection implements Runnable {
     private String username;
     private String host;
-    private int port;
     private String password;
 
-    public SshConnection(String username, String host, int port, String password) {
+    public SshConnection(String username, String host, String password) {
         this.username = username;
         this.host = host;
-        this.port = port;
         this.password = password;
     }
 
     @Override
     public void run() {
-        // Todo: Finish client connection. Read through SshClient.java documentation at top of file.
+        String command = "pwd";
+
+        // Todo: Finish app and refactor run()
         SshClient client = SshClient.setUpDefaultClient();
         client.setForwardingFilter(AcceptAllForwardingFilter.INSTANCE);
         client.start();
         try {
-            try (ClientSession session = client.connect(this.username, this.host, this.port).verify(3000).getSession()) {
+            try (ClientSession session = client.connect(this.username, this.host, 22).verify(3000).getSession()) {
                 session.addPasswordIdentity(this.password);
-                session.auth().verify(60000);
+                session.auth().verify(50000);
                 System.out.println("Connection established");
 
                 ClientChannel channel = session.createChannel(Channel.CHANNEL_SHELL);
@@ -47,17 +47,16 @@ public class SshConnection implements Runnable {
                 channel.setOut(responseStream);
 
                 // Open channel
-                channel.open().verify(5, TimeUnit.SECONDS);
-                try (OutputStream pipedIn = channel.getInvertedIn()) {
-                    pipedIn.write("pwd\n".getBytes());
-                    pipedIn.flush();
+                channel.open().verify(50000);
+                try (OutputStream outputStream = channel.getInvertedIn()) {
+                    executeCommand(outputStream, command);
                 }
 
-                 //Close channel
+                // Close channel
                 channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED),
                         TimeUnit.SECONDS.toMillis(5));
 
-                 //Output after converting to string type
+                // Output after converting to string type
                 String responseString = new String(responseStream.toByteArray());
                 System.out.println(responseString);
             } catch (IOException e) {
@@ -70,4 +69,10 @@ public class SshConnection implements Runnable {
             e.printStackTrace();
         }
     }
+
+    private void executeCommand(OutputStream outputStream, String command) throws IOException {
+        outputStream.write((command + "\n").getBytes());
+        outputStream.flush();
+    }
 }
+

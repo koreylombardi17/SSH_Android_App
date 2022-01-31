@@ -25,7 +25,7 @@ public class SshStatusActivity extends AppCompatActivity {
         // Gets the Intent that created the View
         Intent intent = getIntent();
         // Grab the ip address stored from form
-        // Todo: change this hardcoded value
+        // Todo: change this hardcoded value and username is wrong
         String username = "pi@raspberrypi";
         String ipAddress = intent.getStringExtra(MainActivity.EXTRA_IP_ADDRESS);
         String password = intent.getStringExtra(MainActivity.EXTRA_PASSWORD);
@@ -39,7 +39,7 @@ public class SshStatusActivity extends AppCompatActivity {
         String value = SystemContext.getApplicationInfo().dataDir;
         System.setProperty(key, value);
 
-        SshConnection connect = new SshConnection("pi", "raspberrypi", 22, "raspberry");
+        SshConnection connect = new SshConnection("pi", "raspberrypi", "raspberry");
         Thread thread = new Thread(connect);
         thread.start();
     }
