@@ -34,11 +34,10 @@ public class SshConnection implements Runnable {
         SshClient client = SshClient.setUpDefaultClient();
         client.setForwardingFilter(AcceptAllForwardingFilter.INSTANCE);
         client.start();
-        // TODO: verify() keeps breaking my code
         try {
             try (ClientSession session = client.connect(this.username, this.host, this.port).verify(3000).getSession()) {
                 session.addPasswordIdentity(this.password);
-                //session.auth().verify(60000);
+                session.auth().verify(60000);
                 System.out.println("Connection established");
 
                 ClientChannel channel = session.createChannel(Channel.CHANNEL_SHELL);
@@ -48,23 +47,24 @@ public class SshConnection implements Runnable {
                 channel.setOut(responseStream);
 
                 // Open channel
-//                channel.open().verify(5, TimeUnit.SECONDS);
+                channel.open().verify(5, TimeUnit.SECONDS);
                 try (OutputStream pipedIn = channel.getInvertedIn()) {
                     pipedIn.write("pwd\n".getBytes());
                     pipedIn.flush();
                 }
 
-                // Close channel
+                 //Close channel
                 channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED),
                         TimeUnit.SECONDS.toMillis(5));
 
-                // Output after converting to string type
+                 //Output after converting to string type
                 String responseString = new String(responseStream.toByteArray());
                 System.out.println(responseString);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 client.stop();
+                System.out.println("client stopped");
             }
         } catch (Exception e) {
             e.printStackTrace();

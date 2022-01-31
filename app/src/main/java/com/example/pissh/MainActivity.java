@@ -31,5 +31,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_PASSWORD, password);
 
         startActivity(intent);
+        // Destroys activity when user clicks back. Returns to home.
+        // Must call this function anytime starting a new activity.
+        finish();
     }
 }

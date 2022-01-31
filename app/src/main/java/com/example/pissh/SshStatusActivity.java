@@ -39,7 +39,7 @@ public class SshStatusActivity extends AppCompatActivity {
         String value = SystemContext.getApplicationInfo().dataDir;
         System.setProperty(key, value);
 
-        SshConnection connect = new SshConnection("pi", "raspberrypi", 22, "raspberrypi");
+        SshConnection connect = new SshConnection("pi", "raspberrypi", 22, "raspberry");
         Thread thread = new Thread(connect);
         thread.start();
     }
